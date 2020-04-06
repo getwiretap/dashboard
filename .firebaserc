@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "wiretap-demo-dev"
+    "default": "wiretap-demo-dev",
+    "dev": "wiretap-demo-dev",
+    "prod": "wiretap-production"
   }
 }

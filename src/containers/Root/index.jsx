@@ -2,17 +2,20 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from 'containers/App';
+import Authentication from 'state/Authentication';
 import GlobalStyles from 'components/GlobalStyles';
-import Transcription from 'state/Transcription';
+import User from 'state/User';
 
 
 const Root = () => (
   <>
-    <Transcription>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Transcription>
+    <BrowserRouter>
+      <Authentication>
+        <User>
+          <App />
+        </User>
+      </Authentication>
+    </BrowserRouter>
     <GlobalStyles />
   </>
 );
