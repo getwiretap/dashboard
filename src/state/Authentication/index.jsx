@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import firebase from 'firebase/app';
 import { useImmerReducer } from 'use-immer';
 
+import FullPageLoader from 'components/FullPageLoader';
+
 
 const initialState = {
-  displayName: null,
-  email: null,
   isAuthenticated: false,
   isAuthenticationLoaded: false,
-  photoURL: null,
+  uid: 'anonymous',
 };
 
 export const actionTypes = {
@@ -20,20 +20,16 @@ export const actionTypes = {
 const reducer = (draft, action) => {
   switch (action.type) {
     case (actionTypes.LOGIN): {
-      draft.displayName = action.payload.displayName;
-      draft.email = action.payload.email;
       draft.isAuthenticated = true;
       draft.isAuthenticationLoaded = true;
-      draft.photoURL = action.payload.photoURL;
+      draft.uid = action.payload.uid;
       break;
     }
 
     case (actionTypes.LOGOUT): {
-      draft.displayName = initialState.displayName;
-      draft.email = initialState.email;
       draft.isAuthenticated = false;
       draft.isAuthenticationLoaded = true;
-      draft.photoURL = initialState.photoURL;
+      draft.uid = initialState.uid;
       break;
     }
 
@@ -48,23 +44,27 @@ export const DispatchContext = createContext();
 const Authentication = ({ children }) => {
   const [state, dispatch] = useImmerReducer(reducer, initialState);
 
-  const handleAuthChange = async (maybeUser) => {
-    if (!maybeUser) {
-      dispatch({ type: actionTypes.LOGOUT });
-      return;
-    }
 
-    dispatch({
-      payload: maybeUser,
-      type: actionTypes.LOGIN,
-    });
-  };
+  useEffect(() => {
+    const handleAuthChange = (maybeUser) => {
+      if (!maybeUser) {
+        dispatch({ type: actionTypes.LOGOUT });
+        return;
+      }
 
-  const firebaseAuthentication = firebase.auth();
-  const unsubscribeFromAuth = firebaseAuthentication.onAuthStateChanged(handleAuthChange);
+      dispatch({ payload: maybeUser, type: actionTypes.LOGIN });
+    };
 
-  // Unsubscribe from Auth on dismount
-  useEffect(() => unsubscribeFromAuth, [unsubscribeFromAuth]);
+    const firebaseAuthentication = firebase.auth();
+    const unsubscribeFromAuth = firebaseAuthentication.onAuthStateChanged(handleAuthChange);
+
+    return () => { unsubscribeFromAuth(); };
+  }, [dispatch]);
+
+
+  if (!state.isAuthenticationLoaded) {
+    return <FullPageLoader />;
+  }
 
   return (
     <StateContext.Provider value={state}>

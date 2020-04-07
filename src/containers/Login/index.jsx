@@ -1,8 +1,10 @@
 import React from 'react';
 import { Redirect, useRouteMatch } from 'react-router-dom';
-import { Pane } from 'evergreen-ui';
+import { Card, Pane } from 'evergreen-ui';
 
 import LoginButtons from 'containers/LoginButtons';
+import Logo from 'components/Logo';
+import { scales } from 'theme/colors';
 import { INDEX } from 'routes';
 
 
@@ -23,12 +25,28 @@ const Login = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Pane
+      <Card
         display="flex"
-        flexDirection="column"
+        alignItems="strech"
       >
+        <Pane
+          display="flex"
+          alignItems="center"
+          paddingLeft={14}
+          paddingRight={14}
+        >
+          <Logo width={200} />
+        </Pane>
+        <Pane
+          display="flex"
+          alignItems="stetch"
+          marginLeft={40}
+          marginRight={40}
+          width={1}
+          backgroundColor={scales.N4}
+        />
         <LoginButtons />
-      </Pane>
+      </Card>
     </Pane>
   );
 };

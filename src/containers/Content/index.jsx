@@ -2,8 +2,12 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Pane } from 'evergreen-ui';
 
+import DevicesPage from 'containers/DevicesPage';
 import Logout from 'containers/Logout';
-import { LOGOUT } from 'routes';
+import {
+  DEVICES,
+  LOGOUT,
+} from 'routes';
 
 
 const Content = () => (
@@ -12,7 +16,8 @@ const Content = () => (
     padding={40}
   >
     <Switch>
-      <Route exact path={LOGOUT} component={Logout} />
+      <Route path={LOGOUT} component={Logout} />
+      <Route path={DEVICES} component={DevicesPage} />
     </Switch>
   </Pane>
 );

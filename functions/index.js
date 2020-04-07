@@ -5,10 +5,20 @@ admin.initializeApp();
 
 
 exports.createUserProfile = functions.auth.user().onCreate((user) => {
-  const { displayName, email, uid } = user;
+  const {
+    displayName,
+    email,
+    photoURL,
+    uid,
+  } = user;
 
   const db = admin.firestore();
   const userRef = db.collection('users').doc(uid);
 
-  userRef.set({ displayName, email, uid });
+  return userRef.set({
+    displayName,
+    email,
+    photoURL,
+    uid,
+  });
 });

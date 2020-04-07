@@ -7,14 +7,18 @@ import { StateContext as AuthenticationStateContext } from 'state/Authentication
 
 
 const initialState = {
-  email: null,
   displayName: null,
-  photoURL: null,
+  email: null,
   isUserLoaded: false,
+  photoURL: null,
+  plan: null,
+};
+
+const defaultValues = {
+  plan: { name: 'basic', devices: 0 },
 };
 
 export const actionTypes = {
-  LOGOUT: 'LOGOUT',
   UPDATE_USER: 'UPDATE_USER',
 };
 
@@ -23,8 +27,9 @@ const reducer = (draft, action) => {
     case (actionTypes.UPDATE_USER): {
       draft.displayName = action.payload.displayName || null;
       draft.email = action.payload.email || null;
-      draft.photoURL = action.payload.photoURL || null;
       draft.isUserLoaded = true;
+      draft.photoURL = action.payload.photoURL || null;
+      draft.plan = action.payload.plan || defaultValues.plan;
       break;
     }
 
@@ -36,31 +41,26 @@ const reducer = (draft, action) => {
 export const StateContext = createContext();
 export const DispatchContext = createContext();
 
+
 const User = ({ children }) => {
-  const { email } = useContext(AuthenticationStateContext);
+  const { uid } = useContext(AuthenticationStateContext);
   const [state, dispatch] = useImmerReducer(reducer, initialState);
 
-  const updateUser = (userData) => {
-    dispatch({
-      payload: userData,
-      type: actionTypes.UPDATE_USER,
-    });
-  };
 
-  const handleSnapshotChanges = (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      const userData = change.doc.data();
-      updateUser(userData);
-    });
-  };
+  useEffect(() => {
+    const handleUserChanges = (maybeUser) => {
+      const userData = maybeUser.exists ? maybeUser.data() : {};
 
-  const db = firebase.firestore();
-  const queryResult = db.collection('users').where('email', '==', email);
+      dispatch({ payload: userData, type: actionTypes.UPDATE_USER });
+    };
 
-  const unsubscribeFromUser = queryResult.onSnapshot(handleSnapshotChanges);
+    const db = firebase.firestore();
+    const userDoc = db.collection('users').doc(uid);
+    const unsubscribeFromUser = userDoc.onSnapshot(handleUserChanges);
 
-  // Unsubscribe from User on dismount
-  useEffect(() => unsubscribeFromUser, [unsubscribeFromUser]);
+    return unsubscribeFromUser;
+  }, [dispatch, uid]);
+
 
   return (
     <StateContext.Provider value={state}>
