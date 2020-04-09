@@ -39,7 +39,6 @@ const reducer = (draft, action) => {
 
 
 export const StateContext = createContext();
-export const DispatchContext = createContext();
 
 const Authentication = ({ children }) => {
   const [state, dispatch] = useImmerReducer(reducer, initialState);
@@ -68,9 +67,7 @@ const Authentication = ({ children }) => {
 
   return (
     <StateContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
-        { children }
-      </DispatchContext.Provider>
+      { children }
     </StateContext.Provider>
   );
 };

@@ -14,6 +14,7 @@ const Content = () => (
   <Pane
     display="flex"
     padding={40}
+    marginLeft={280}
   >
     <Switch>
       <Route path={LOGOUT} component={Logout} />

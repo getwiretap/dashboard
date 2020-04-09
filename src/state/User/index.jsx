@@ -6,17 +6,18 @@ import { useImmerReducer } from 'use-immer';
 import { StateContext as AuthenticationStateContext } from 'state/Authentication';
 
 
+const defaultValues = {
+  plan: { name: 'basic', devices: 0 },
+};
+
 const initialState = {
   displayName: null,
   email: null,
   isUserLoaded: false,
   photoURL: null,
-  plan: null,
+  plan: defaultValues.plan,
 };
 
-const defaultValues = {
-  plan: { name: 'basic', devices: 0 },
-};
 
 export const actionTypes = {
   UPDATE_USER: 'UPDATE_USER',
@@ -39,7 +40,6 @@ const reducer = (draft, action) => {
 
 
 export const StateContext = createContext();
-export const DispatchContext = createContext();
 
 
 const User = ({ children }) => {
@@ -61,12 +61,9 @@ const User = ({ children }) => {
     return unsubscribeFromUser;
   }, [dispatch, uid]);
 
-
   return (
     <StateContext.Provider value={state}>
-      <DispatchContext.Provider value={dispatch}>
-        { children }
-      </DispatchContext.Provider>
+      { children }
     </StateContext.Provider>
   );
 };

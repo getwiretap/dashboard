@@ -1,12 +1,12 @@
+import 'firebase/auth';
+import 'firebase/firestore';
+
 import React from 'react';
 import firebase from 'firebase/app';
 import { render } from 'react-dom';
 
 import Root from 'containers/Root';
 import * as serviceWorker from './serviceWorker';
-
-import 'firebase/auth';
-import 'firebase/firestore';
 
 
 const {

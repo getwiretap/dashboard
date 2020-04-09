@@ -38,7 +38,7 @@ export const DispatchContext = createContext();
 
 const Sessions = ({ children }) => {
   const { uid } = useContext(AuthenticationStateContext);
-  const [state, dispatch] = useImmerReducer(reducer, initialState);
+  const [state, localDispatch] = useImmerReducer(reducer, initialState);
 
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Sessions = ({ children }) => {
         const { id } = change.doc;
 
         if (change.type === 'removed') {
-          dispatch({
+          localDispatch({
             type: actionTypes.REMOVE_SESSION,
             meta: { id },
           });
@@ -55,9 +55,12 @@ const Sessions = ({ children }) => {
           return;
         }
 
-        dispatch({
+        const data = change.doc.data();
+        const dataWithId = { ...data, id };
+
+        localDispatch({
           type: actionTypes.UPDATE_SESSION,
-          payload: change.doc.data(),
+          payload: dataWithId,
           meta: { id },
         });
       });
@@ -67,9 +70,40 @@ const Sessions = ({ children }) => {
     const queryResult = db.collection('sessions').where('userId', '==', uid);
     const unsubscribeFromSessions = queryResult.onSnapshot(handleSessionsChanges);
 
-    return unsubscribeFromSessions;
-  }, [dispatch, uid]);
 
+    return unsubscribeFromSessions;
+  }, [localDispatch, uid]);
+
+
+  // FIXME - handle Firebase error;
+  const killSession = ({ id }) => {
+    const db = firebase.firestore();
+    db.collection('sessions').doc(id).delete();
+  };
+
+  // FIXME - handle Firebase error;
+  const createSession = () => {
+    const password = String(Math.round(Math.random() * 1000000000000));
+
+    const now = new Date();
+    const createdAt = now.getTime();
+
+    console.log(createdAt);
+
+    const db = firebase.firestore();
+    db.collection('sessions').doc(password).set({
+      createdAt,
+      deviceId: null,
+      deviceName: null,
+      password,
+      userId: uid,
+    });
+  };
+
+  const dispatch = {
+    createSession,
+    killSession,
+  };
 
   return (
     <StateContext.Provider value={state}>
