@@ -5,8 +5,9 @@ import { ThemeProvider } from 'evergreen-ui';
 import App from 'containers/App';
 import Authentication from 'state/Authentication';
 import GlobalStyles from 'components/GlobalStyles';
-import Sessions from 'state/Sessions';
+import ConnectionRequests from 'state/ConnectionRequests';
 import User from 'state/User';
+import Sessions from 'state/Sessions';
 import themeOverride from 'theme/evergreenOverride';
 
 
@@ -16,9 +17,11 @@ const Root = () => (
       <BrowserRouter>
         <Authentication>
           <User>
-            <Sessions>
-              <App />
-            </Sessions>
+            <ConnectionRequests>
+              <Sessions>
+                <App />
+              </Sessions>
+            </ConnectionRequests>
           </User>
         </Authentication>
       </BrowserRouter>

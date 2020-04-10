@@ -4,7 +4,6 @@ import { Icon, Pane, Code } from 'evergreen-ui';
 
 import { scales, text as textColor } from 'theme/colors';
 import {
-  formatPassword,
   getSessionColor,
   getSessionStatus,
   getSessionStatusDisplayName,
@@ -28,7 +27,7 @@ const SessionDescription = ({ session }) => {
   const statusText = getSessionStatusDisplayName(session);
 
   const password = session && session.password;
-  const passwordText = `Access code: ${formatPassword(password)}`;
+  const passwordText = `Access code: ${password}`;
   const passwordColor = status === 'online' ? textColor.default : scales.N6;
   const passwordIcon = status === 'online' ? 'chevron-right' : 'small-tick';
   const passwordIconColor = status === 'online' ? scales.N6 : scales.N5;

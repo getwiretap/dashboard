@@ -9,7 +9,7 @@ import FullPageLoader from 'components/FullPageLoader';
 const initialState = {
   isAuthenticated: false,
   isAuthenticationLoaded: false,
-  uid: 'anonymous',
+  uid: null,
 };
 
 export const actionTypes = {

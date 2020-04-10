@@ -3,34 +3,31 @@ import PropTypes from 'prop-types';
 import firebase from 'firebase/app';
 import { useImmerReducer } from 'use-immer';
 
+import { noOp } from 'utils';
 import { StateContext as AuthenticationStateContext } from 'state/Authentication';
 
 
-const defaultValues = {
-  plan: { name: 'basic', devices: 0 },
-};
-
 const initialState = {
-  displayName: null,
-  email: null,
   isUserLoaded: false,
-  photoURL: null,
-  plan: defaultValues.plan,
+  user: null,
 };
 
 
 export const actionTypes = {
   UPDATE_USER: 'UPDATE_USER',
+  REMOVE_USER: 'REMOVE_USER',
 };
 
 const reducer = (draft, action) => {
   switch (action.type) {
     case (actionTypes.UPDATE_USER): {
-      draft.displayName = action.payload.displayName || null;
-      draft.email = action.payload.email || null;
+      draft.user = action.payload;
+      break;
+    }
+
+    case (actionTypes.REMOVE_USER): {
+      draft.user = null;
       draft.isUserLoaded = true;
-      draft.photoURL = action.payload.photoURL || null;
-      draft.plan = action.payload.plan || defaultValues.plan;
       break;
     }
 
@@ -48,17 +45,31 @@ const User = ({ children }) => {
 
 
   useEffect(() => {
-    const handleUserChanges = (maybeUser) => {
-      const userData = maybeUser.exists ? maybeUser.data() : {};
+    // Do not connect to Firestore if user is logged out
+    if (!uid) {
+      return noOp;
+    }
 
-      dispatch({ payload: userData, type: actionTypes.UPDATE_USER });
+    const handleUserChanges = (querySnapshot) => {
+      querySnapshot.docChanges().forEach((change) => {
+        if (change.type === 'removed') {
+          dispatch({ type: actionTypes.REMOVE_USER });
+          return;
+        }
+
+        dispatch({
+          type: actionTypes.UPDATE_USER,
+          payload: change.doc.data(),
+        });
+      });
     };
 
     const db = firebase.firestore();
-    const userDoc = db.collection('users').doc(uid);
-    const unsubscribeFromUser = userDoc.onSnapshot(handleUserChanges);
+    const queryResult = db.collection('users').where('uid', '==', uid);
 
-    return unsubscribeFromUser;
+    const unsubscribeFromUsers = queryResult.onSnapshot(handleUserChanges);
+
+    return unsubscribeFromUsers;
   }, [dispatch, uid]);
 
   return (

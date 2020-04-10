@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Pane, Button, Text } from 'evergreen-ui';
 
-import { DispatchContext as SessionsDispatchContext } from 'state/Sessions';
+import { DispatchContext as CRDispatchContext } from 'state/ConnectionRequests';
 
 
 const propTypes = {
@@ -19,15 +19,15 @@ const defaultProps = {
 };
 
 const DeviceToggle = ({ session }) => {
-  const { createSession, killSession } = useContext(SessionsDispatchContext);
+  const { createConnectionRequest, killConnectionRequest } = useContext(CRDispatchContext);
 
   const handleClick = () => {
     if (session) {
-      killSession(session);
+      killConnectionRequest(session);
       return;
     }
 
-    createSession();
+    createConnectionRequest();
   };
 
   return (
