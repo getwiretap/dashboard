@@ -7,16 +7,16 @@ import { DispatchContext as SessionPasswordsDispatchConenxt } from 'state/Sessio
 
 
 const propTypes = {
-  id: PropTypes.string,
+  documentId: PropTypes.string,
   status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
 };
 
 const defaultProps = {
-  id: '',
+  documentId: '',
 };
 
 
-const DeviceToggle = ({ id, status }) => {
+const DeviceToggle = ({ documentId, status }) => {
   const { killSession } = useContext(SessionsDispatchContext);
   const {
     createSessionPassword,
@@ -30,11 +30,11 @@ const DeviceToggle = ({ id, status }) => {
     }
 
     if (status === 'online') {
-      deleteSessionPassword(id);
+      deleteSessionPassword(documentId);
       return;
     }
 
-    killSession(id);
+    killSession(documentId);
   };
 
   return (

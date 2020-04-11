@@ -9,14 +9,13 @@ import SessionDescription from 'containers/SessionDescription';
 
 const propTypes = {
   deviceName: PropTypes.string,
-  id: PropTypes.string,
+  documentId: PropTypes.string.isRequired,
   password: PropTypes.string,
   status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
 };
 
 const defaultProps = {
   deviceName: null,
-  id: null,
   password: null,
 };
 
@@ -24,7 +23,7 @@ const DeviceCard = ({
   deviceName,
   password,
   status,
-  id,
+  documentId,
 }) => (
   <Card
     display="flex"
@@ -48,7 +47,7 @@ const DeviceCard = ({
         status={status}
       />
       <DeviceToggle
-        id={id}
+        documentId={documentId}
         status={status}
       />
     </Pane>

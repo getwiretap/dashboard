@@ -15,3 +15,29 @@ export const getStatusColor = (status) => {
 
   return backgroundColors[status];
 };
+
+export const formatPassword = (password) => {
+  if (!password) {
+    return '';
+  }
+
+  const passwordChunks = [];
+  let lastChunk = '';
+
+  password
+    .split('')
+    .forEach((character) => {
+      if (lastChunk.length === 4) {
+        passwordChunks.push(lastChunk);
+        lastChunk = '';
+      }
+
+      lastChunk += character;
+    });
+
+  if (lastChunk.length) {
+    passwordChunks.push(lastChunk);
+  }
+
+  return passwordChunks.join('-');
+};

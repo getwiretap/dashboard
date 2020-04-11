@@ -18,32 +18,39 @@ const Sessions = () => {
   const sessions = useContext(SessionsContext);
 
   const deviceAllowance = get(user, 'plan.devices', 0);
+  const activePasswords = {};
 
   const devices = range(deviceAllowance).map(() => ({
-    id: uuid(),
+    documentId: uuid(),
     status: 'offline',
   }));
 
-  forEach(sessions, (session, deviceId) => {
+  forEach(sessions, (session, documentId) => {
     const device = {
       ...session,
-      id: deviceId,
+      documentId,
       status: 'connected',
     };
+
+    activePasswords[session.password] = true;
 
     devices.shift();
     devices.push(device);
   });
 
-  forEach(sessionPasswords, (sessionPassword, password) => {
-    const device = {
-      ...sessionPassword,
-      id: password,
-      status: 'online',
-    };
+  forEach(sessionPasswords, (sessionPassword, documentId) => {
+    const isSessionActive = activePasswords[sessionPassword.password];
 
-    devices.shift();
-    devices.push(device);
+    if (!isSessionActive) {
+      const device = {
+        ...sessionPassword,
+        documentId,
+        status: 'online',
+      };
+
+      devices.shift();
+      devices.push(device);
+    }
   });
 
   const orderedDevices = orderBy(devices, 'createdAt');
@@ -53,14 +60,14 @@ const Sessions = () => {
       {
         orderedDevices.map(({
           deviceName,
-          id,
+          documentId,
           password,
           status,
         }) => (
           <DeviceCard
             deviceName={deviceName}
-            id={id}
-            key={id}
+            documentId={documentId}
+            key={documentId}
             password={password}
             status={status}
           />

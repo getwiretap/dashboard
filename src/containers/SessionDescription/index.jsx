@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Pane } from 'evergreen-ui';
 
 import SessionDescriptionLine from 'components/SessionDescriptionLine';
-import { getStatusColor } from 'utils/sessions';
+import { getStatusColor, formatPassword } from 'utils/sessions';
 
 
 export const getStatusDescription = (status, deviceName) => {
@@ -33,7 +33,7 @@ const SessionDescription = ({ deviceName, password, status }) => {
   const statusDescription = getStatusDescription(status, deviceName);
   const indicatorColor = getStatusColor(status);
 
-  const passwordText = `Access code: ${password}`;
+  const passwordText = `Access code: ${formatPassword(password)}`;
 
   return (
     <Pane

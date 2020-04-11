@@ -40,10 +40,10 @@ service cloud.firestore {
       let deviceId = request.resource.data.deviceId;
       let isDeviceConnected = exists(/databases/$(database)/documents/sessions/$(deviceId));
 
-      let isPasswordConsumable = !resource.data.keys().hasAny(['deviceId', 'uid']);
-      let isRequestValid = request.resource.data.keys().hasAll(['uid', 'deviceId']);
+      let requestHasDeviceId = ('deviceId' in request.resource.data);
+      let resourceHasDeviceId = ('deviceId' in resource.data);
 
-      return (!isDeviceConnected && isPasswordConsumable && isRequestValid);
+      return (!isDeviceConnected && requestHasDeviceId && !resourceHasDeviceId);
     }
   }
 }

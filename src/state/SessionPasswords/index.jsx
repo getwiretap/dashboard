@@ -85,9 +85,7 @@ const SessionPasswords = ({ children }) => {
   const createSessionPassword = () => {
     const chance = new Chance();
     const password = chance.string({
-      length: 6,
-      casing: 'upper',
-      alpha: true,
+      length: 12,
       numeric: true,
     });
 

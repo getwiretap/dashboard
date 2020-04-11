@@ -22,3 +22,17 @@ exports.createUserProfile = functions.auth.user().onCreate((user) => {
     uid,
   });
 });
+
+exports.createSession = functions.firestore.document('sessionPasswords/{password}').onUpdate((change) => {
+  const sessionData = change.after.data();
+
+  const db = admin.firestore();
+
+  const sessionRef = db.collection('sessions').doc(sessionData.deviceId);
+  const sessionPasswordRef = db.collection('sessionPasswords').doc(sessionData.password);
+
+  return Promise.all([
+    sessionRef.set(sessionData),
+    sessionPasswordRef.delete(),
+  ]);
+});
