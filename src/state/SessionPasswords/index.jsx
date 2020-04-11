@@ -10,20 +10,20 @@ import { StateContext as AuthenticationStateContext } from 'state/Authentication
 const initialState = {};
 
 export const actionTypes = {
-  REMOVE_CONNECTION_REQUEST: 'REMOVE_CONNECTION_REQUEST',
-  UPDATE_CONNECTION_REQUEST: 'UPDATE_CONNECTION_REQUEST',
+  REMOVE_SESSION_PASSWORD: 'REMOVE_SESSION_PASSWORD',
+  UPDATE_SESSION_PASSWORD: 'UPDATE_SESSION_PASSWORD',
 };
 
 const reducer = (draft, action) => {
   switch (action.type) {
-    case (actionTypes.UPDATE_CONNECTION_REQUEST): {
+    case (actionTypes.UPDATE_SESSION_PASSWORD): {
       const { password } = action.payload;
       draft[password] = action.payload || {};
       break;
     }
 
-    case (actionTypes.REMOVE_CONNECTION_REQUEST): {
-      draft[action.payload] = null;
+    case (actionTypes.REMOVE_SESSION_PASSWORD): {
+      delete draft[action.payload];
       break;
     }
 
@@ -36,7 +36,7 @@ export const StateContext = createContext();
 export const DispatchContext = createContext();
 
 
-const ConnectionRequests = ({ children }) => {
+const SessionPasswords = ({ children }) => {
   const { uid } = useContext(AuthenticationStateContext);
   const [state, localDispatch] = useImmerReducer(reducer, initialState);
 
@@ -52,7 +52,7 @@ const ConnectionRequests = ({ children }) => {
 
         if (change.type === 'removed') {
           localDispatch({
-            type: actionTypes.REMOVE_CONNECTION_REQUEST,
+            type: actionTypes.REMOVE_SESSION_PASSWORD,
             payload: id,
           });
 
@@ -60,29 +60,29 @@ const ConnectionRequests = ({ children }) => {
         }
 
         localDispatch({
-          type: actionTypes.UPDATE_CONNECTION_REQUEST,
+          type: actionTypes.UPDATE_SESSION_PASSWORD,
           payload: change.doc.data(),
         });
       });
     };
 
     const db = firebase.firestore();
-    const queryResult = db.collection('connectionRequests').where('uid', '==', uid);
-    const unsubscribeFromConnectionRequests = queryResult.onSnapshot(handleUpdate);
+    const queryResult = db.collection('sessionPasswords').where('uid', '==', uid);
+    const unsubscribeFromSessionPasswords = queryResult.onSnapshot(handleUpdate);
 
 
-    return unsubscribeFromConnectionRequests;
+    return unsubscribeFromSessionPasswords;
   }, [localDispatch, uid]);
 
 
   // FIXME - handle Firebase error;
-  const killConnectionRequest = ({ password }) => {
+  const deleteSessionPassword = (password) => {
     const db = firebase.firestore();
-    db.collection('connectionRequests').doc(password).delete();
+    db.collection('sessionPasswords').doc(password).delete();
   };
 
   // FIXME - handle Firebase error;
-  const createConnectionRequest = () => {
+  const createSessionPassword = () => {
     const chance = new Chance();
     const password = chance.string({
       length: 6,
@@ -93,7 +93,7 @@ const ConnectionRequests = ({ children }) => {
 
     const db = firebase.firestore();
 
-    db.collection('connectionRequests').doc(password).set({
+    db.collection('sessionPasswords').doc(password).set({
       createdAt: getSecondsSinceEpoch(),
       password,
       uid,
@@ -101,8 +101,8 @@ const ConnectionRequests = ({ children }) => {
   };
 
   const dispatch = {
-    createConnectionRequest,
-    killConnectionRequest,
+    createSessionPassword,
+    deleteSessionPassword,
   };
 
   return (
@@ -114,8 +114,8 @@ const ConnectionRequests = ({ children }) => {
   );
 };
 
-ConnectionRequests.propTypes = {
+SessionPasswords.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default ConnectionRequests;
+export default SessionPasswords;

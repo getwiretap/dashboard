@@ -7,18 +7,19 @@ service cloud.firestore {
       allow list: if resourceMatchesUID();
     }
 
-    match /connectionRequests/{password} {
+    match /sessionPasswords/{password} {
       allow get: if true;
       allow list: if resourceMatchesUID();
 
       allow create: if requestMatchesUID();
+      allow delete: if resourceMatchesUID();
+      allow update: if canConsumePassword();
     }
 
     match /sessions/{deviceId} {
       allow get: if true;
       allow list: if resourceMatchesUID();
 
-      allow create: if canCreateSession();
       allow delete: if resourceMatchesUID();
     }
 
@@ -35,13 +36,14 @@ service cloud.firestore {
         return request.auth.uid == resource.data.uid;
     }
 
-    function canCreateSession() {
-      let password = request.resource.data.password;
-      let passwordIsValid = exists(/databases/$(database)/documents/connectionRequests/$(password));
-      let hasUID = ("uid" in request.resource.data);
-      let hasDeviceId = ("deviceId" in request.resource.data);
+    function canConsumePassword() {
+      let deviceId = request.resource.data.deviceId;
+      let isDeviceConnected = exists(/databases/$(database)/documents/sessions/$(deviceId));
 
-      return passwordIsValid && hasUID && hasDeviceId;
+      let isPasswordConsumable = !resource.data.keys().hasAny(['deviceId', 'uid']);
+      let isRequestValid = request.resource.data.keys().hasAll(['uid', 'deviceId']);
+
+      return (!isDeviceConnected && isPasswordConsumable && isRequestValid);
     }
   }
 }

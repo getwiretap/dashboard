@@ -2,32 +2,39 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Pane, Button, Text } from 'evergreen-ui';
 
-import { DispatchContext as CRDispatchContext } from 'state/ConnectionRequests';
+import { DispatchContext as SessionsDispatchContext } from 'state/Sessions';
+import { DispatchContext as SessionPasswordsDispatchConenxt } from 'state/SessionPasswords';
 
 
 const propTypes = {
-  session: PropTypes.shape({
-    deviceId: PropTypes.string,
-    deviceName: PropTypes.string,
-    id: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
-  }),
+  id: PropTypes.string,
+  status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
 };
 
 const defaultProps = {
-  session: null,
+  id: '',
 };
 
-const DeviceToggle = ({ session }) => {
-  const { createConnectionRequest, killConnectionRequest } = useContext(CRDispatchContext);
+
+const DeviceToggle = ({ id, status }) => {
+  const { killSession } = useContext(SessionsDispatchContext);
+  const {
+    createSessionPassword,
+    deleteSessionPassword,
+  } = useContext(SessionPasswordsDispatchConenxt);
 
   const handleClick = () => {
-    if (session) {
-      killConnectionRequest(session);
+    if (status === 'offline') {
+      createSessionPassword();
       return;
     }
 
-    createConnectionRequest();
+    if (status === 'online') {
+      deleteSessionPassword(id);
+      return;
+    }
+
+    killSession(id);
   };
 
   return (

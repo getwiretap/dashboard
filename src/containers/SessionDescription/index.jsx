@@ -1,38 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Pane, Code } from 'evergreen-ui';
+import { Pane } from 'evergreen-ui';
 
-import { scales, text as textColor } from 'theme/colors';
-import {
-  getSessionColor,
-  getSessionStatus,
-  getSessionStatusDisplayName,
-} from 'utils/sessions';
+import SessionDescriptionLine from 'components/SessionDescriptionLine';
+import { getStatusColor } from 'utils/sessions';
+
+
+export const getStatusDescription = (status, deviceName) => {
+  const statusDescriptions = {
+    connected: `Connected to ${deviceName}`,
+    online: 'Waiting for connection...',
+    offline: 'Offline',
+  };
+
+  return statusDescriptions[status];
+};
 
 
 const propTypes = {
-  session: PropTypes.shape({
-    deviceId: PropTypes.string,
-    deviceName: PropTypes.string,
-    password: PropTypes.string.isRequired,
-  }),
+  deviceName: PropTypes.string,
+  password: PropTypes.string,
+  status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
 };
 
 const defaultProps = {
-  session: null,
+  deviceName: null,
+  password: null,
 };
 
-const SessionDescription = ({ session }) => {
-  const status = getSessionStatus(session);
-  const statusText = getSessionStatusDisplayName(session);
 
-  const password = session && session.password;
+const SessionDescription = ({ deviceName, password, status }) => {
+  const statusDescription = getStatusDescription(status, deviceName);
+  const indicatorColor = getStatusColor(status);
+
   const passwordText = `Access code: ${password}`;
-  const passwordColor = status === 'online' ? textColor.default : scales.N6;
-  const passwordIcon = status === 'online' ? 'chevron-right' : 'small-tick';
-  const passwordIconColor = status === 'online' ? scales.N6 : scales.N5;
-
-  const indicatorColor = getSessionColor(session);
 
   return (
     <Pane
@@ -41,57 +42,17 @@ const SessionDescription = ({ session }) => {
       display="flex"
       flexDirection="column"
     >
-      <Pane
-        display="flex"
-        alignItems="center"
-      >
-        <Pane
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-start"
-          width={22}
-        >
-          <Icon
-            icon="dot"
-            color={indicatorColor}
-            paddingBottom={1}
-          />
-        </Pane>
-        <Code
-          boxShadow="none"
-          background="none"
-          padding={0}
-        >
-          { statusText}
-        </Code>
-      </Pane>
+      <SessionDescriptionLine
+        icon="dot"
+        iconColor={indicatorColor}
+        text={statusDescription}
+      />
       {
         password && (
-          <Pane
-            display="flex"
-            alignItems="center"
-          >
-            <Pane
-              display="flex"
-              alignItems="center"
-              justifyContent="flex-start"
-              width={22}
-            >
-              <Icon
-                icon={passwordIcon}
-                color={passwordIconColor}
-                paddingBottom={1}
-              />
-            </Pane>
-            <Code
-              boxShadow="none"
-              background="none"
-              padding={0}
-              color={passwordColor}
-            >
-              { passwordText }
-            </Code>
-          </Pane>
+          <SessionDescriptionLine
+            icon="chevron-right"
+            text={passwordText}
+          />
         )
       }
     </Pane>

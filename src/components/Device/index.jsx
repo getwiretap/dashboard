@@ -3,32 +3,28 @@ import PropTypes from 'prop-types';
 import BarLoader from 'react-spinners/BarLoader';
 import { Card, Icon } from 'evergreen-ui';
 
-import { getSessionColor, getSessionStatus } from 'utils/sessions';
+import { getStatusColor } from 'utils/sessions';
 
 
-const propTypes = {
-  session: PropTypes.shape({
-    deviceId: PropTypes.string,
-    deviceName: PropTypes.string,
-    password: PropTypes.string.isRequired,
-  }),
-};
-
-const defaultProps = {
-  session: null,
-};
-
-const Device = ({ session }) => {
-  const status = getSessionStatus(session);
-  const backgroundColor = getSessionColor(session);
-
+export const getIcon = (status) => {
   const icons = {
     connected: 'lock',
     online: 'cell-tower',
     offline: 'power',
   };
 
-  const icon = icons[status];
+  return icons[status];
+};
+
+
+const propTypes = {
+  status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
+};
+
+
+const Device = ({ status }) => {
+  const backgroundColor = getStatusColor(status);
+  const icon = getIcon(status);
 
   return (
     <Card
@@ -70,6 +66,5 @@ const Device = ({ session }) => {
 };
 
 Device.propTypes = propTypes;
-Device.defaultProps = defaultProps;
 
 export default Device;

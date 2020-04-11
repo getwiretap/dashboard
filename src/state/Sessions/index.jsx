@@ -17,12 +17,12 @@ const reducer = (draft, action) => {
   switch (action.type) {
     case (actionTypes.UPDATE_SESSION): {
       const { sessionId } = action.meta;
-      draft[sessionId] = action.payload || {};
+      draft[sessionId] = action.payload;
       break;
     }
 
     case (actionTypes.REMOVE_SESSION): {
-      draft[action.payload] = null;
+      delete draft[action.payload];
       break;
     }
 
@@ -51,7 +51,7 @@ const Sessions = ({ children }) => {
 
         if (change.type === 'removed') {
           localDispatch({
-            type: actionTypes.REMOVE_CONNECTION_REQUEST,
+            type: actionTypes.REMOVE_SESSION,
             payload: sessionId,
           });
 
@@ -59,7 +59,7 @@ const Sessions = ({ children }) => {
         }
 
         localDispatch({
-          type: actionTypes.UPDATE_CONNECTION_REQUEST,
+          type: actionTypes.UPDATE_SESSION,
           payload: change.doc.data(),
           meta: { sessionId },
         });
@@ -69,7 +69,6 @@ const Sessions = ({ children }) => {
     const db = firebase.firestore();
     const queryResult = db.collection('sessions').where('uid', '==', uid);
     const unsubscribeFromSessions = queryResult.onSnapshot(handleUpdate);
-
 
     return unsubscribeFromSessions;
   }, [localDispatch, uid]);

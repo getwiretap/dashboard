@@ -8,19 +8,24 @@ import SessionDescription from 'containers/SessionDescription';
 
 
 const propTypes = {
-  session: PropTypes.shape({
-    deviceId: PropTypes.string,
-    deviceName: PropTypes.string,
-    id: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
-  }),
+  deviceName: PropTypes.string,
+  id: PropTypes.string,
+  password: PropTypes.string,
+  status: PropTypes.oneOf(['online', 'offline', 'connected']).isRequired,
 };
 
 const defaultProps = {
-  session: null,
+  deviceName: null,
+  id: null,
+  password: null,
 };
 
-const DeviceCard = ({ session }) => (
+const DeviceCard = ({
+  deviceName,
+  password,
+  status,
+  id,
+}) => (
   <Card
     display="flex"
     width={460}
@@ -30,15 +35,22 @@ const DeviceCard = ({ session }) => (
     elevation={2}
   >
     <Pane marginRight={30}>
-      <Device session={session} />
+      <Device status={status} />
     </Pane>
     <Pane
       display="flex"
       flexDirection="column"
       paddingY={5}
     >
-      <SessionDescription session={session} />
-      <DeviceToggle session={session} />
+      <SessionDescription
+        deviceName={deviceName}
+        password={password}
+        status={status}
+      />
+      <DeviceToggle
+        id={id}
+        status={status}
+      />
     </Pane>
   </Card>
 );
