@@ -1,22 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Heading, Pane } from 'evergreen-ui';
+import { Heading, Pane, Paragraph } from 'evergreen-ui';
 
 
 const propTypes = {
-  text: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
 };
 
-const PageTitle = ({ text }) => (
+const PageTitle = ({ title, subtitle }) => (
   <Pane
     display="flex"
-    alignItems="center"
+    flexDirection="column"
+    alignItems="flex-start"
     height={40}
-    marginBottom={20}
+    marginBottom={40}
   >
-    <Heading size={900}>
-      { text }
+    <Heading size={800}>
+      { title }
     </Heading>
+    <Paragraph>
+      { subtitle }
+    </Paragraph>
   </Pane>
 );
 

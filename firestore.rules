@@ -23,17 +23,22 @@ service cloud.firestore {
       allow delete: if resourceMatchesUID();
     }
 
+    match /cashiers/{cashierId} {
+      allow get: if true;
+      allow list: if resourceMatchesUID();
 
+      allow write: if requestMatchesUID();
+    }
 
 
 
 
     function requestMatchesUID() {
-        return request.auth.uid == request.resource.data.uid;
+      return request.auth.uid == request.resource.data.uid;
     }
 
     function resourceMatchesUID() {
-        return request.auth.uid == resource.data.uid;
+      return request.auth.uid == resource.data.uid;
     }
 
     function canConsumePassword() {

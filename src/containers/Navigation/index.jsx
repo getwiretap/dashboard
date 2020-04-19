@@ -20,14 +20,14 @@ const routes = [
     to: DASHBOARD,
   },
   {
-    displayName: 'Cashiers',
-    iconName: 'headset',
-    to: CASHIERS,
-  },
-  {
     displayName: 'Prompts',
     iconName: 'console',
     to: PROMPTS,
+  },
+  {
+    displayName: 'Cashiers',
+    iconName: 'headset',
+    to: CASHIERS,
   },
   {
     displayName: 'Devices',

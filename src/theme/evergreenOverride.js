@@ -19,5 +19,7 @@ headingStyles.forEach((style, index) => {
   themeOverride.typography.headings[style].fontWeight = headingFontWeights[index];
 });
 
+themeOverride.overlayBackgroundColor = '#6368d2d6';
+
 
 export default themeOverride;

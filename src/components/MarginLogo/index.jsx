@@ -7,7 +7,7 @@ import { INDEX } from 'routes';
 
 
 const MarginLogo = () => (
-  <Pane marginBottom={40}>
+  <Pane marginBottom={50}>
     <Link to={INDEX}>
       <Pane
         display="flex"

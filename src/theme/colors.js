@@ -1,6 +1,7 @@
 export const brand = {
   primary: '#FA8964',
   secondary: '#05204A',
+  accent: '#6368D2',
 };
 
 export const neutral = {

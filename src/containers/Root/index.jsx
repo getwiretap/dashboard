@@ -4,11 +4,14 @@ import { ThemeProvider } from 'evergreen-ui';
 
 import App from 'containers/App';
 import Authentication from 'state/Authentication';
+import Cashiers from 'state/Cashiers';
 import GlobalStyles from 'components/GlobalStyles';
 import SessionPasswords from 'state/SessionPasswords';
-import User from 'state/User';
 import Sessions from 'state/Sessions';
+import User from 'state/User';
 import themeOverride from 'theme/evergreenOverride';
+
+console.log('TO', themeOverride);
 
 
 const Root = () => (
@@ -19,7 +22,9 @@ const Root = () => (
           <User>
             <SessionPasswords>
               <Sessions>
-                <App />
+                <Cashiers>
+                  <App />
+                </Cashiers>
               </Sessions>
             </SessionPasswords>
           </User>

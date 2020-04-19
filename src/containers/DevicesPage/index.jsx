@@ -7,7 +7,10 @@ import PageTitle from 'components/PageTitle';
 
 const DevicesPage = () => (
   <Pane>
-    <PageTitle text="Devices" />
+    <PageTitle
+      title="Devices"
+      subtitle="You can manage your connected devices here."
+    />
     <Devices />
   </Pane>
 );
