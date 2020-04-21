@@ -2,20 +2,20 @@ import React from 'react';
 import { Pane } from 'evergreen-ui';
 
 import ButtonLink from 'components/ButtonLink';
-import { CASHIER_NEW } from 'routes';
+import { PROMPT_NEW } from 'routes';
 
 
-const CreateNewCashierButton = () => (
+const CreateNewPromptButton = () => (
   <Pane
     display="flex"
     justifyContent="flex-start"
   >
     <ButtonLink
-      to={CASHIER_NEW}
+      to={PROMPT_NEW}
       iconName="plus"
-      text="Create new cashier"
+      text="Create new prompt"
     />
   </Pane>
 );
 
-export default CreateNewCashierButton;
+export default CreateNewPromptButton;

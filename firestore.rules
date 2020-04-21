@@ -25,7 +25,14 @@ service cloud.firestore {
 
     match /cashiers/{cashierId} {
       allow get: if true;
-      allow list: if resourceMatchesUID();
+      allow list: if true;
+
+      allow write: if requestMatchesUID();
+    }
+
+    match /prompts/{cashierId} {
+      allow get: if true;
+      allow list: if true;
 
       allow write: if requestMatchesUID();
     }

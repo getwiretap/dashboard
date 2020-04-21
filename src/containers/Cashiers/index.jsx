@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import orderBy from 'lodash.orderby';
 import { Pane } from 'evergreen-ui';
 
-import DeviceCard from 'components/DeviceCard';
+import CashierCard from 'containers/CashierCard';
 import { StateContext as CashiersContext } from 'state/Cashiers';
 
 
-const Sessions = () => {
+const Cashiers = () => {
   const cashiers = useContext(CashiersContext);
 
   const orderedCashiers = orderBy(cashiers, 'displayName');
@@ -15,17 +15,13 @@ const Sessions = () => {
     <Pane>
       {
         orderedCashiers.map(({
-          deviceName,
-          documentId,
+          displayName,
           password,
-          status,
         }) => (
-          <DeviceCard
-            deviceName={deviceName}
-            documentId={documentId}
-            key={documentId}
+          <CashierCard
+            key={password}
+            displayName={displayName}
             password={password}
-            status={status}
           />
         ))
       }
@@ -33,4 +29,4 @@ const Sessions = () => {
   );
 };
 
-export default Sessions;
+export default Cashiers;
