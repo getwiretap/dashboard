@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import firebase from 'firebase/app';
 import { useImmerReducer } from 'use-immer';
 
-import { identity, noOp } from 'utils';
+import { noOp } from 'utils';
 import { StateContext as AuthenticationStateContext } from 'state/Authentication';
 
 const initialState = {};
@@ -76,17 +76,9 @@ const Prompts = ({ children }) => {
 
   // FIXME - handle Firebase error;
   const createPrompt = (promptData) => {
-    const { displayName, variants } = promptData;
-
-    const cleanVariants = variants.filter(identity);
-
-    const dataWithUid = {
-      displayName,
-      variants: cleanVariants,
-      uid,
-    };
-
     const db = firebase.firestore();
+
+    const dataWithUid = { ...promptData, uid };
 
     return db.collection('prompts').add(dataWithUid);
   };

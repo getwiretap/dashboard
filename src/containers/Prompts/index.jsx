@@ -9,15 +9,15 @@ import { StateContext as PromptsContext } from 'state/Prompts';
 const Prompts = () => {
   const prompts = useContext(PromptsContext);
 
-  const orderedPrompts = orderBy(prompts, 'displayText');
+  const orderedPrompts = orderBy(prompts, 'label');
 
   return (
     <Pane>
       {
-        orderedPrompts.map(({ displayName }) => (
+        orderedPrompts.map(({ label }) => (
           <PromptCard
-            key={displayName}
-            displayName={displayName}
+            key={label}
+            label={label}
           />
         ))
       }

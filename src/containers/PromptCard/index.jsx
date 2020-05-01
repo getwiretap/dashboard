@@ -4,11 +4,11 @@ import { Pane, Card, Heading } from 'evergreen-ui';
 
 
 const propTypes = {
-  displayName: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 
-const CashierCard = ({ displayName }) => (
+const CashierCard = ({ label }) => (
   <Card
     display="flex"
     width={460}
@@ -19,7 +19,7 @@ const CashierCard = ({ displayName }) => (
   >
     <Pane marginRight={30}>
       <Heading>
-        { displayName }
+        { label }
       </Heading>
     </Pane>
   </Card>

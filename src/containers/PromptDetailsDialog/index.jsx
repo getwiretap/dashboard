@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import get from 'lodash.get';
-import range from 'lodash.range';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -64,29 +63,10 @@ const PromptDetailsDialog = () => {
         <Controller
           as={TextInputField}
           control={control}
-          label="Visible prompt"
+          label="Prompt label"
           placeholder="Welcome to Pizza Planet..."
-          name="displayName"
+          name="label"
         />
-        <Pane marginLeft={20}>
-          {
-            range(10)
-              .map((index) => {
-                const fieldName = `variants[${index}]`;
-                const label = `Acceptable variant #${index + 1}`;
-
-                return (
-                  <Controller
-                    key={index}
-                    as={TextInputField}
-                    control={control}
-                    label={label}
-                    name={fieldName}
-                  />
-                );
-              })
-          }
-        </Pane>
         <Pane
           display="flex"
           alignItems="center"

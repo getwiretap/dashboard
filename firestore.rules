@@ -3,40 +3,31 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    match /users/{userId} {
-      allow list: if resourceMatchesUID();
+    match /users/{userID} {
+      allow read: if resourceMatchesUID();
+
+      allow update: if resourceMatchesUID();
     }
 
-    match /sessionPasswords/{password} {
+    match /devices/{deviceID} {
       allow get: if true;
-      allow list: if resourceMatchesUID();
+
+      allow write: if requestMatchesUID();
+    }
+
+    match /cashiers/{cashierID} {
+      allow read: if resourceMatchesUID();
 
       allow create: if requestMatchesUID();
-      allow delete: if resourceMatchesUID();
-      allow update: if canConsumePassword();
+      allow update: if resourceMatchesUID();
     }
 
-    match /sessions/{deviceId} {
-      allow get: if true;
-      allow list: if resourceMatchesUID();
+    match /prompts/{cashierID} {
+      allow read: if resourceMatchesUID();
 
-      allow delete: if resourceMatchesUID();
+      allow create: if requestMatchesUID();
+      allow update: if resourceMatchesUID();
     }
-
-    match /cashiers/{cashierId} {
-      allow get: if true;
-      allow list: if true;
-
-      allow write: if requestMatchesUID();
-    }
-
-    match /prompts/{cashierId} {
-      allow get: if true;
-      allow list: if true;
-
-      allow write: if requestMatchesUID();
-    }
-
 
 
 
@@ -46,16 +37,6 @@ service cloud.firestore {
 
     function resourceMatchesUID() {
       return request.auth.uid == resource.data.uid;
-    }
-
-    function canConsumePassword() {
-      let deviceId = request.resource.data.deviceId;
-      let isDeviceConnected = exists(/databases/$(database)/documents/sessions/$(deviceId));
-
-      let requestHasDeviceId = ('deviceId' in request.resource.data);
-      let resourceHasDeviceId = ('deviceId' in resource.data);
-
-      return (!isDeviceConnected && requestHasDeviceId && !resourceHasDeviceId);
     }
   }
 }
